@@ -1,2 +1,2 @@
 # DAY-testnet-faucet
-Facet fot Day tokens on the Testnet
+### Faucet for Chronologic's DAY tokens on the Testnet
