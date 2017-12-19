@@ -122,9 +122,9 @@ contract Token {
 
 contract DAYFaucet is Ownable{
 
-  uint waitTime = 3600; //Wait time in seconds to reques new tokens
+  uint public waitTime = 3600; //Wait time in seconds to reques new tokens
   uint public allowedTokens = 100*1 ether; //Number of tokens granted per request
-  address public dAYTokens;
+  address public tokenAddress;
 
   mapping(address=>uint) public lastRequest;//Timestamp address last withdrew from faucet
 
@@ -133,18 +133,14 @@ contract DAYFaucet is Ownable{
   event AddressFunded(address indexed receiver, uint value,uint timestamp);//Event fired once the waitTime value is changed
 
   function DAYFaucet(address _dayAddress,uint _allowedTokens,uint _waitTime) public {
-      dAYTokens = _dayAddress;
+      tokenAddress = _dayAddress;
       updateAllowedTokens(_allowedTokens);
       updateWaitTime(_waitTime);
   }
 
-  function getLastRequest(address _addr) public view returns (uint){
-    return lastRequest[_addr];
-  }
-
   //Retreive number of tokens owned by the contract
   function getTokensBalance() public view returns (uint balance){
-    return Token(dAYTokens).balanceOf(this);
+    return Token(tokenAddress).balanceOf(this);
   }
 
   //Update tokens allowed by the contract
@@ -167,16 +163,16 @@ contract DAYFaucet is Ownable{
 
   //Actuall faucet function
   function useFaucet() public{
-    require(SafeMath.sub(now,getLastRequest(msg.sender)) >= waitTime);
+    require(SafeMath.sub(now,lastRequest[msg.sender]) >= waitTime);
     require(getTokensBalance() >= allowedTokens );
     lastRequest[msg.sender] = now;
     AddressFunded(msg.sender, allowedTokens, now);
-    Token(dAYTokens).transfer(msg.sender,allowedTokens);
+    Token(tokenAddress).transfer(msg.sender,allowedTokens);
   }
 
   //Retreive allowed funds from the contract to the owner
   function withdraw() public {
-    Token(dAYTokens).transfer(owner,getTokensBalance());
+    Token(tokenAddress).transfer(owner,getTokensBalance());
     if(this.balance>0)
       owner.transfer(this.balance);
   }
