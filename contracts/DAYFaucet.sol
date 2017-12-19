@@ -22,10 +22,6 @@ contract DAYFaucet is Ownable{
       updateWaitTime(_waitTime);
   }
 
-  function getLastRequest(address _addr) public view returns (uint){
-    return lastRequest[_addr];
-  }
-
   //Retreive number of tokens owned by the contract
   function getTokensBalance() public view returns (uint balance){
     return Token(tokenAddress).balanceOf(this);
@@ -51,7 +47,7 @@ contract DAYFaucet is Ownable{
 
   //Actuall faucet function
   function useFaucet() public{
-    require(SafeMath.sub(now,getLastRequest(msg.sender)) >= waitTime);
+    require(SafeMath.sub(now,lastRequest[msg.sender]) >= waitTime);
     require(getTokensBalance() >= allowedTokens );
     lastRequest[msg.sender] = now;
     AddressFunded(msg.sender, allowedTokens, now);
