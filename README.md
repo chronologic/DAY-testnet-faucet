@@ -12,4 +12,4 @@ uint _waitTime: Wait time between valid requests
 0xfc5c1dc438411dce1cee4971fa333ecd3c3fa7d3
 
 ##### Kovan
-0xcefdfd443a2e20201080f8cb4c11d71430687df6
+0x3baebd8b6839f8ae0c88fc15b9d8d7b641d06731
