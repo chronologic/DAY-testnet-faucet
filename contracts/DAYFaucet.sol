@@ -1,8 +1,74 @@
-pragma solidity^0.4.19;
+pragma solidity ^0.4.19;
 
-import 'zeppelin/math/SafeMath.sol';
-import 'zeppelin/ownership/Ownable.sol';
-import * as Token from 'tokens/Token.sol';
+import "./HumanStandardToken.sol";
+
+/**
+ * @title SafeMath
+ * @dev Math operations with safety checks that throw on error
+ */
+library SafeMath {
+  function mul(uint256 a, uint256 b) internal constant returns (uint256) {
+    uint256 c = a * b;
+    assert(a == 0 || c / a == b);
+    return c;
+  }
+
+  function div(uint256 a, uint256 b) internal constant returns (uint256) {
+    // assert(b > 0); // Solidity automatically throws when dividing by 0
+    uint256 c = a / b;
+    // assert(a == b * c + a % b); // There is no case in which this doesn't hold
+    return c;
+  }
+
+  function sub(uint256 a, uint256 b) internal constant returns (uint256) {
+    assert(b <= a);
+    return a - b;
+  }
+
+  function add(uint256 a, uint256 b) internal constant returns (uint256) {
+    uint256 c = a + b;
+    assert(c >= a);
+    return c;
+  }
+}
+
+
+/**
+ * @title Ownable
+ * @dev The Ownable contract has an owner address, and provides basic authorization control
+ * functions, this simplifies the implementation of "user permissions".
+ */
+contract Ownable {
+  address public owner;
+
+  event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+
+  /**
+   * @dev The Ownable constructor sets the original `owner` of the contract to the sender
+   * account.
+   */
+  function Ownable() {
+    owner = msg.sender;
+  }
+
+  /**
+   * @dev Throws if called by any account other than the owner.
+   */
+  modifier onlyOwner() {
+    require(msg.sender == owner);
+    _;
+  }
+
+  /**
+   * @dev Allows the current owner to transfer control of the contract to a newOwner.
+   * @param newOwner The address to transfer ownership to.
+   */
+  function transferOwnership(address newOwner) onlyOwner public {
+    require(newOwner != address(0));
+    OwnershipTransferred(owner, newOwner);
+    owner = newOwner;
+  }
+}
 
 contract DAYFaucet is Ownable{
 
@@ -24,7 +90,7 @@ contract DAYFaucet is Ownable{
 
   //Retreive number of tokens owned by the contract
   function getTokensBalance() public view returns (uint balance){
-    return Token(tokenAddress).balanceOf(this);
+    return HumanStandardToken(tokenAddress).balanceOf(this);
   }
 
   //Update tokens allowed by the contract
@@ -51,19 +117,19 @@ contract DAYFaucet is Ownable{
     require(getTokensBalance() >= allowedTokens );
     lastRequest[msg.sender] = now;
     AddressFunded(msg.sender, allowedTokens, now);
-    Token(tokenAddress).transfer(msg.sender,allowedTokens);
+    HumanStandardToken(tokenAddress).transfer(msg.sender,allowedTokens);
   }
 
   //Retreive allowed funds from the contract to the owner
   function withdraw() public {
-    Token(tokenAddress).transfer(owner,getTokensBalance());
+    HumanStandardToken(tokenAddress).transfer(owner,getTokensBalance());
     if(this.balance>0)
       owner.transfer(this.balance);
   }
 
   //Allow Retreival of indicated tokens from the contract to the owner
   function withdraw(address _addr) public {
-    Token token = Token(_addr);
+    Token token = HumanStandardToken(_addr);
     uint bal = token.balanceOf(this);
     token.transfer(owner,bal);
   }
