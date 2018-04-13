@@ -1,4 +1,4 @@
-# DAY-testnet-faucet [WIP]
+# DAY Testnet Faucet
 ### Faucet for Chronologic's DAY tokens on the Testnet
 
 How to deploy the testnet faucet locally:
