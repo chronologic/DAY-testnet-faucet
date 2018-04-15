@@ -9,11 +9,17 @@ module.exports = function(deployer) {
     	return deployer.deploy(DAYFaucet, DAYToken.address, 333, 60);
 	})
 	.then(() => {
-		const contracts = {
+		const addresses = {
 			DAYToken: DAYToken.address,
 			DAYFaucet: DAYFaucet.address,
 		};
 
-		fs.writeFileSync('DAY_contracts.json', JSON.stringify(contracts));
+		const abis = {
+			DAYToken: DAYToken.abi,
+			DAYFaucet: DAYFaucet.abi,
+		};
+
+		fs.writeFileSync('DAY_addresses.json', JSON.stringify(addresses));
+		fs.writeFileSync('DAY_abis.json', JSON.stringify(abis));
     });
 };
