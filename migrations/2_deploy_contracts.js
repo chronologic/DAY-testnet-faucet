@@ -9,7 +9,7 @@ module.exports = function(deployer) {
     	return deployer.deploy(DAYFaucet, DAYToken.address, 333*1e18, 60);
 	})
 	.then(() => {
-        return DAYToken.at(DAYToken.address).transfer(DAYFaucet.address, 80000*1e18)
+        return DAYToken.at(DAYToken.address).transfer(DAYFaucet.address, 100000*1e18)
     })
 	.then(() => {
 		const addresses = {
