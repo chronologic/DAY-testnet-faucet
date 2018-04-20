@@ -4,12 +4,14 @@ const DAYToken = artifacts.require("./HumanStandardToken.sol");
 const DAYFaucet = artifacts.require("./DAYFaucet.sol");
 
 module.exports = function(deployer) {
-	deployer.deploy(DAYToken, 1000000*1e18, 'DAY Token', 18, 'DAY')
+	const totalTokenSupply = 1000000*1e18;
+
+	deployer.deploy(DAYToken, totalTokenSupply, 'DAY Token', 18, 'DAY')
 	.then(() => {
     	return deployer.deploy(DAYFaucet, DAYToken.address, 333*1e18, 60);
 	})
 	.then(() => {
-        return DAYToken.at(DAYToken.address).transfer(DAYFaucet.address, 80000*1e18)
+        return DAYToken.at(DAYToken.address).transfer(DAYFaucet.address, totalTokenSupply)
     })
 	.then(() => {
 		const addresses = {
